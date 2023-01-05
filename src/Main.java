@@ -279,6 +279,7 @@ public class Main {
     }
 
     public static void menueAufruf() {
+        System.out.println("");
         System.out.println("Herzlich Willkommen bei dem Projektmanager, was wollen Sie machen?");
         System.out.println("1. Kund:in anlegen");
         System.out.println("2. Projekt anlegen");
@@ -294,6 +295,5 @@ public class Main {
             userInput = scanner.nextLine();
         } while (userInput.equals(""));
         return userInput;
-
     }
 }
