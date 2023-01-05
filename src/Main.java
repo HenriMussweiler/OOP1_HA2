@@ -46,7 +46,7 @@ public class Main {
             return;
         }
 
-        System.out.println("Bitte wählen Sie das Projekt aus in dem Sie eine Aufgabe erledigt haben:");
+        System.out.println("Bitte geben Sie die Projektnummer ein, in dem Sie eine Aufgabe erledigt haben:");
         int j = 0;
         while ((j < projekte.length) && (projekte[j] != null)) {
             System.out.println(projekte[j]);
@@ -55,7 +55,24 @@ public class Main {
 
         anzeiger(projekte, tasks);
 
+        // TODO Aufgabe/Task auf erledigt stellen mit Bezug zu anzeiger()
+        System.out.println("Bitte geben Sie die Aufgabennummer ein, die Sie erledigt haben:");
 
+        boolean benutzerEingabeFehlerhaft;
+
+        do {
+            benutzerEingabeFehlerhaft = true;
+            String userInput = userInput();
+
+            int e = 0;
+            while ((e < tasks.length) && (tasks[e] != null)) {
+                if (tasks[e].getTaskNumber().equals(userInput)) {
+                    tasks[e].setStatus("Erledigt");
+                    benutzerEingabeFehlerhaft = false;
+                }
+                e++;
+            }
+        } while(benutzerEingabeFehlerhaft);
     }
 
     private static void createTask(Task[] tasks, Project[] projekte) {
@@ -77,13 +94,13 @@ public class Main {
             return;
         }
 
-        // Projekt auswählen mit einer Übersicht wie bei showProject
-//         System.out.println("Zu welchem Projekt wollen Sie die Aufgabe hinzufügen?");
-//         int j = 0;
-//         while ((j < projekte.length) && (projekte[j] != null)) {
-//             System.out.println(projekte[j]);
-//             j++;
-//         }
+        System.out.println("Welches Projekt wollen Sie sich anzeigen lassen?");
+
+        int z = 0;
+        while ((z < projekte.length) && (projekte[z] != null)) {
+            System.out.println(projekte[z]);
+            z++;
+        }
 
         anzeiger(projekte, tasks);
 
@@ -94,7 +111,7 @@ public class Main {
         System.out.println("Geben Sie eine optionale Beschreibung ein:");
         String description = userInput();
 
-        int taskNumber = i + 1;
+        String taskNumber = String.valueOf(i + 1);
         Task task = new Task(taskName, description, taskNumber);
 
         // Neue Aufgaben haben den Status offen
@@ -103,7 +120,11 @@ public class Main {
 
         boolean projektnummerEingabeFehlerhaft = true;
         do {
-            anzeiger(projekte, tasks);
+            int u = 0;
+            while ((u < projekte.length) && (projekte[u] != null)) {
+                System.out.println(projekte[u]);
+                u++;
+            }
             System.out.println("Geben Sie die Projektnummer ein, der Sie die Aufgabe zuweisen wollen:");
             String aufgabenZuweisung = userInput();
             int p = 0;
@@ -139,7 +160,7 @@ public class Main {
     }
 
     private static void anzeiger(Project[] projekte, Task[] tasks) {
-        boolean benutzerEingabeFehlerhaft = false;
+        boolean benutzerEingabeFehlerhaft;
 
         do {
             benutzerEingabeFehlerhaft = true;

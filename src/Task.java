@@ -1,21 +1,21 @@
 public class Task {
-    private int taskNumber;
+    private String taskNumber;
     private String taskName;
     private String description;
     private String status;
     private Project Project;
 
-    public Task(String taskName, String description, int taskNumber) {
+    public Task(String taskName, String description, String taskNumber) {
         this.taskName = taskName;
         this.description = description;
         this.taskNumber = taskNumber;
     }
 
-    public int getTaskNumber() {
+    public String getTaskNumber() {
         return taskNumber;
     }
 
-    public void setTaskNumber(int taskNumber) {
+    public void setTaskNumber(String taskNumber) {
         this.taskNumber = taskNumber;
     }
 
