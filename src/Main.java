@@ -9,31 +9,31 @@ public class Main {
         Project[] projekte = new Project[10];
         Task[] tasks = new Task[10];
 
-        // Menü aufruf
+        // Menue aufruf
         int menueEingabe;
         do {
             menueAufruf();
             menueEingabe = scanner.nextInt();
 
             if (menueEingabe == 1) {
-                System.out.println("Sie haben Kund:in anlegen gewählt.");
+                System.out.println("Sie haben Kund:in anlegen gewaehlt.");
                 createCustomer(kunden);
             } else if (menueEingabe == 2) {
-                System.out.println("Sie haben Projekt anlegen gewählt.");
+                System.out.println("Sie haben Projekt anlegen gewaehlt.");
                 createProject(projekte, kunden);
             } else if (menueEingabe == 3) {
-                System.out.println("Sie haben Projekt anzeigen gewählt.");
+                System.out.println("Sie haben Projekt anzeigen gewaehlt.");
                 showProject(projekte, tasks);
             } else if (menueEingabe == 4) {
-                System.out.println("Sie haben Aufgabe zu Projekt hinzufuegen gewählt.");
+                System.out.println("Sie haben Aufgabe zu Projekt hinzufuegen gewaehlt.");
                 createTask(tasks, projekte);
             } else if (menueEingabe == 5) {
-                System.out.println("Sie haben Aufgabe in Projekt erledigen gewählt");
+                System.out.println("Sie haben Aufgabe in Projekt erledigen gewaehlt");
                 finishTask(projekte, tasks);
             } else if (menueEingabe == 6) {
                 System.out.println("Sie haben das Programm beendet.");
             } else {
-                System.out.println("Bitte geben Sie einen gültigen Menuepunkt an.");
+                System.out.println("Bitte geben Sie einen gueltigen Menuepunkt an.");
             }
         } while (menueEingabe != 6);
 
@@ -46,6 +46,9 @@ public class Main {
             return;
         }
 
+        // Hier muss ein \n konsumiert werden
+        clearScannerCache();
+
         System.out.println("Bitte geben Sie die Projektnummer ein, in dem Sie eine Aufgabe erledigt haben:");
         int j = 0;
         while ((j < projekte.length) && (projekte[j] != null)) {
@@ -55,7 +58,6 @@ public class Main {
 
         anzeiger(projekte, tasks);
 
-        // TODO Aufgabe/Task auf erledigt stellen mit Bezug zu anzeiger()
         System.out.println("Bitte geben Sie die Aufgabennummer ein, die Sie erledigt haben:");
 
         boolean benutzerEingabeFehlerhaft;
@@ -82,7 +84,7 @@ public class Main {
             return;
         }
 
-        // Prüfen ob bereits 10 Aufgaben angelegt wurden
+        // Pruefen ob bereits 10 Aufgaben angelegt wurden
         int i = 0;
 
         while ((i < tasks.length) && (tasks[i] != null)) {
@@ -94,6 +96,9 @@ public class Main {
             return;
         }
 
+        // Hier muss ein \n konsumiert werden
+        clearScannerCache();
+
         System.out.println("Welches Projekt wollen Sie sich anzeigen lassen?");
 
         int z = 0;
@@ -104,8 +109,8 @@ public class Main {
 
         anzeiger(projekte, tasks);
 
-        // Aufforderung eine neue Aufgabe hinzuzufügen mit Aufgabennamen und optionale Beschreibung
-        System.out.println("Fügen Sie nun eine neue Aufgabe hinzu.");
+        // Aufforderung eine neue Aufgabe hinzuzufuegen mit Aufgabennamen und optionale Beschreibung
+        System.out.println("Fuegen Sie nun eine neue Aufgabe hinzu.");
         System.out.println("Geben Sie der Aufgabe einen Namen:");
         String taskName = userInput();
         System.out.println("Geben Sie eine optionale Beschreibung ein:");
@@ -118,6 +123,9 @@ public class Main {
         String status = "Offen";
         task.setStatus(status);
 
+
+        // TODO Aufgaben werden allen Projekten zugewiesen, darf aber nur dem gezielten Projekt zugewiesen werden
+        // TODO Auch bei Projekten die erst danach hinzugefügt werden, existieren dann bereits die Aufgaben
         boolean projektnummerEingabeFehlerhaft = true;
         do {
             int u = 0;
@@ -127,6 +135,7 @@ public class Main {
             }
             System.out.println("Geben Sie die Projektnummer ein, der Sie die Aufgabe zuweisen wollen:");
             String aufgabenZuweisung = userInput();
+
             int p = 0;
             while ((p < projekte.length) && (projekte[p] != null)) {
                 if (projekte[p].getProjectNumber().equals(aufgabenZuweisung)) {
@@ -146,6 +155,9 @@ public class Main {
             System.out.println("Sie haben noch keinen Projekte angelegt.");
             return;
         }
+
+        // Hier muss ein \n konsumiert werden
+        clearScannerCache();
 
         System.out.println("Welches Projekt wollen Sie sich anzeigen lassen?");
 
@@ -180,11 +192,23 @@ public class Main {
                         System.out.println(tasks[j]);
                         j++;
                     }
-                    e++;
                 }
+                e++;
+
                 benutzerEingabeFehlerhaft = false;
+
+//                TODO Versuch bei falscher Eingabe eine Nachricht auszugeben ohne, dass diese immer in der Schleife ausgegeben wird.
+//                if (projekte[9] == null && )  {
+//                    System.out.println("Sie haben keins der aufgelisteten Projekte ausgewaehlt.");
+//                    System.out.println(" ");
+//                    return;
+//                } else {
+//                    System.out.println(" ");
+//                }
             }
         } while (benutzerEingabeFehlerhaft);
+
+
     }
 
     private static void createProject(Project[] projekte, Customer[] kunden) {
@@ -204,6 +228,9 @@ public class Main {
             return;
         }
 
+        // Hier muss ein \n konsumiert werden
+        clearScannerCache();
+
         System.out.println("Geben Sie den Projektnamen an:");
         String name = userInput();
         Address address = addressInput();
@@ -215,7 +242,7 @@ public class Main {
         project.setProjectNumber(projectNumber);
         project.setAddress(address);
 
-        System.out.println("Zu welchem Kunden wollen Sie das Projekt hinzufügen?");
+        System.out.println("Zu welchem Kunden wollen Sie das Projekt hinzufuegen?");
         int j = 0;
         while ((j < kunden.length) && (kunden[j] != null)) {
             System.out.println(kunden[j]);
@@ -241,7 +268,7 @@ public class Main {
 
     private static void createCustomer(Customer[] kunden) {
 
-
+        // check ob array 10 inhalte hat und ob diese null sind
         int i = 0;
         while ((i < kunden.length) && (kunden[i] != null)) {
             i++;
@@ -250,6 +277,9 @@ public class Main {
             System.out.println("Es wurden bereits 10 Kunden angelegt.");
             return;
         }
+
+        // Hier muss ein \n konsumiert werden
+        clearScannerCache();
 
         System.out.println("Geben Sie den Vornamen ein:");
         String firstName = userInput();
@@ -262,6 +292,8 @@ public class Main {
         customer.setCustomerNumber(customerNumber);
         customer.setAddress(address);
         kunden[i] = customer;
+
+        System.out.println("Der Kunde wurde angelgt.");
 
     }
 
@@ -284,16 +316,28 @@ public class Main {
         System.out.println("1. Kund:in anlegen");
         System.out.println("2. Projekt anlegen");
         System.out.println("3. Projekt anzeigen");
-        System.out.println("4. Aufgabe zu Projekt hinzufügen");
+        System.out.println("4. Aufgabe zu Projekt hinzufuegen");
         System.out.println("5. Aufgabe in Projekt erledigen");
         System.out.println("6. Programm beenden");
     }
 
-    public static String userInput() {
+    private static String userInput() {
         String userInput;
+        boolean  correctInput = true;
         do {
             userInput = scanner.nextLine();
-        } while (userInput.equals(""));
+
+            if(userInput.equals("")){
+                System.out.println("Bitte geben Sie einen gueltigen Wert ein.");
+            } else {
+                correctInput = false;
+            }
+        } while (correctInput);
         return userInput;
     }
+
+    private static void clearScannerCache() {
+        scanner.nextLine();
+    }
+
 }
