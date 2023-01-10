@@ -4,6 +4,15 @@ public class Project {
     private Address address;
     private String estimatedDate;
     private Customer Kunde;
+    private Task[] tasks = new Task[10];
+
+    public Task[] getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Task[] tasks) {
+        this.tasks = tasks;
+    }
 
     public Customer getKunde() {
         return Kunde;

@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -7,44 +8,52 @@ public class Main {
 
         Customer[] kunden = new Customer[10];
         Project[] projekte = new Project[10];
-        Task[] tasks = new Task[10];
+
+
 
         // Menue aufruf
         int menueEingabe;
-        do {
-            menueAufruf();
-            menueEingabe = scanner.nextInt();
 
-            if (menueEingabe == 1) {
-                System.out.println("Sie haben Kund:in anlegen gewaehlt.");
-                createCustomer(kunden);
-            } else if (menueEingabe == 2) {
-                System.out.println("Sie haben Projekt anlegen gewaehlt.");
-                createProject(projekte, kunden);
-            } else if (menueEingabe == 3) {
-                System.out.println("Sie haben Projekt anzeigen gewaehlt.");
-                showProject(projekte, tasks);
-            } else if (menueEingabe == 4) {
-                System.out.println("Sie haben Aufgabe zu Projekt hinzufuegen gewaehlt.");
-                createTask(tasks, projekte);
-            } else if (menueEingabe == 5) {
-                System.out.println("Sie haben Aufgabe in Projekt erledigen gewaehlt");
-                finishTask(projekte, tasks);
-            } else if (menueEingabe == 6) {
-                System.out.println("Sie haben das Programm beendet.");
-            } else {
-                System.out.println("Bitte geben Sie einen gueltigen Menuepunkt an.");
-            }
-        } while (menueEingabe != 6);
+            menueAufruf();
+
+            boolean eingabeFehlerhaft;
+            do {
+                eingabeFehlerhaft = false;
+                try {
+                    do {
+                        menueEingabe = scanner.nextInt();
+
+                        if (menueEingabe == 1) {
+                            System.out.println("Sie haben Kund:in anlegen gewaehlt.");
+                            createCustomer(kunden);
+                        } else if (menueEingabe == 2) {
+                            System.out.println("Sie haben Projekt anlegen gewaehlt.");
+                            createProject(projekte, kunden);
+                        } else if (menueEingabe == 3) {
+                            System.out.println("Sie haben Projekt anzeigen gewaehlt.");
+                            showProject(projekte);
+                        } else if (menueEingabe == 4) {
+                            System.out.println("Sie haben Aufgabe zu Projekt hinzufuegen gewaehlt.");
+                            createTask(projekte);
+                        } else if (menueEingabe == 5) {
+                            System.out.println("Sie haben Aufgabe in Projekt erledigen gewaehlt");
+                            finishTask(projekte);
+                        } else if (menueEingabe == 6) {
+                            System.out.println("Sie haben das Programm beendet.");
+                        } else {
+                            System.out.println("Bitte geben Sie einen gueltigen Menuepunkt an.");
+                        }
+                    } while (menueEingabe != 6);
+                } catch (InputMismatchException e) {
+                    System.out.println("Bitte geben Sie eine Menuenummer ein.");
+                    eingabeFehlerhaft = true;
+                    clearScannerCache();
+                }
+            } while (eingabeFehlerhaft);
 
     }
 
-    private static void finishTask(Project[] projekte, Task[] tasks) {
-
-        if (tasks[0] == null) {
-            System.out.println("Sie haben noch keinen Aufgaben angelegt.");
-            return;
-        }
+    private static void finishTask(Project[] projekte) {
 
         // Hier muss ein \n konsumiert werden
         clearScannerCache();
@@ -56,45 +65,18 @@ public class Main {
             j++;
         }
 
-        anzeiger(projekte, tasks);
+        anzeiger(projekte, true);
 
-        System.out.println("Bitte geben Sie die Aufgabennummer ein, die Sie erledigt haben:");
-
-        boolean benutzerEingabeFehlerhaft;
-
-        do {
-            benutzerEingabeFehlerhaft = true;
-            String userInput = userInput();
-
-            int e = 0;
-            while ((e < tasks.length) && (tasks[e] != null)) {
-                if (tasks[e].getTaskNumber().equals(userInput)) {
-                    tasks[e].setStatus("Erledigt");
-                    benutzerEingabeFehlerhaft = false;
-                }
-                e++;
-            }
-        } while(benutzerEingabeFehlerhaft);
     }
 
-    private static void createTask(Task[] tasks, Project[] projekte) {
+    private static void createTask(Project[] projekte) {
 
         if (projekte[0] == null) {
             System.out.println("Sie haben noch keinen Projekte angelegt.");
             return;
         }
 
-        // Pruefen ob bereits 10 Aufgaben angelegt wurden
-        int i = 0;
 
-        while ((i < tasks.length) && (tasks[i] != null)) {
-            i++;
-        }
-
-        if (tasks[i] != null) {
-            System.out.println("Es wurden bereits 10 Aufgaben angelegt.");
-            return;
-        }
 
         // Hier muss ein \n konsumiert werden
         clearScannerCache();
@@ -107,7 +89,7 @@ public class Main {
             z++;
         }
 
-        anzeiger(projekte, tasks);
+        anzeiger(projekte, false);
 
         // Aufforderung eine neue Aufgabe hinzuzufuegen mit Aufgabennamen und optionale Beschreibung
         System.out.println("Fuegen Sie nun eine neue Aufgabe hinzu.");
@@ -116,16 +98,7 @@ public class Main {
         System.out.println("Geben Sie eine optionale Beschreibung ein:");
         String description = userInput();
 
-        String taskNumber = String.valueOf(i + 1);
-        Task task = new Task(taskName, description, taskNumber);
 
-        // Neue Aufgaben haben den Status offen
-        String status = "Offen";
-        task.setStatus(status);
-
-
-        // TODO Aufgaben werden allen Projekten zugewiesen, darf aber nur dem gezielten Projekt zugewiesen werden
-        // TODO Auch bei Projekten die erst danach hinzugefügt werden, existieren dann bereits die Aufgaben
         boolean projektnummerEingabeFehlerhaft = true;
         do {
             int u = 0;
@@ -137,19 +110,40 @@ public class Main {
             String aufgabenZuweisung = userInput();
 
             int p = 0;
+            Task[] tasks;
             while ((p < projekte.length) && (projekte[p] != null)) {
                 if (projekte[p].getProjectNumber().equals(aufgabenZuweisung)) {
-                    task.setProject(projekte[p]);
+
+                    // Pruefen ob bereits 10 Aufgaben angelegt wurden
+                    tasks = projekte[p].getTasks();
+                    int i = 0;
+
+                    while ((i < tasks.length) && (tasks[i] != null)) {
+                        i++;
+                    }
+
+                    if (tasks[i] != null) {
+                        System.out.println("Es wurden bereits 10 Aufgaben angelegt.");
+                        return;
+                    }
+
+                    String taskNumber = String.valueOf(i + 1);
+                    Task task = new Task(taskName, description, taskNumber);
+
+                    // Neue Aufgaben haben den Status offen
+                    String status = "Offen";
+                    task.setStatus(status);
+
+                    projekte[p].getTasks()[i] = task;
                     projektnummerEingabeFehlerhaft = false;
                 }
                 p++;
             }
         } while (projektnummerEingabeFehlerhaft);
-        tasks[i] = task;
 
     }
 
-    private static void showProject(Project[] projekte, Task[] tasks) {
+    private static void showProject(Project[] projekte) {
 
         if (projekte[0] == null) {
             System.out.println("Sie haben noch keinen Projekte angelegt.");
@@ -167,11 +161,11 @@ public class Main {
             i++;
         }
 
-        anzeiger(projekte, tasks);
+        anzeiger(projekte, false);
 
     }
 
-    private static void anzeiger(Project[] projekte, Task[] tasks) {
+    private static void anzeiger(Project[] projekte, boolean checkAndFinishTasks) {
         boolean benutzerEingabeFehlerhaft;
 
         do {
@@ -179,6 +173,7 @@ public class Main {
             String userInput = userInput();
 
             int e = 0;
+            Task[] tasks;
             while ((e < projekte.length) && (projekte[e] != null)) {
                 if (projekte[e].getProjectNumber().equals(userInput)) {
                     System.out.println("Projekt: '" + projekte[e].getName() + "'");
@@ -188,10 +183,22 @@ public class Main {
                     System.out.println("Aufgaben:");
 
                     int j = 0;
-                    while ((j < tasks.length) && (tasks[j] != null)) {
-                        System.out.println(tasks[j]);
-                        j++;
+                    int nummerierung = 1;
+                    tasks = projekte[e].getTasks();
+                    if (checkAndFinishTasks && tasks.length == 0) {
+                        System.out.println("Es sind keine Aufgaben vorhanden. Sie gelangen nun wieder ins Menue.");
+                        return;
+                    } else {
+                        while ((j < tasks.length) && (tasks[j] != null)) {
+                                System.out.println(nummerierung + ". " + tasks[j].toString());
+                                nummerierung++;
+                                j++;
+                        }
                     }
+                    if (checkAndFinishTasks) {
+                        finishTask(projekte[e]);
+                    }
+
                 }
                 e++;
 
@@ -208,6 +215,29 @@ public class Main {
             }
         } while (benutzerEingabeFehlerhaft);
 
+
+    }
+
+    private static void finishTask(Project project) {
+
+        System.out.println("Bitte geben Sie die Aufgabennummer ein, die Sie erledigt haben:");
+
+        boolean benutzerEingabeFehlerhaft;
+        Task[] tasks = project.getTasks();
+
+        do {
+            benutzerEingabeFehlerhaft = true;
+            String userInput = userInput();
+
+            int e = 0;
+            while ((e < tasks.length) && (tasks[e] != null)) {
+                if (tasks[e].getTaskNumber().equals(userInput)) {
+                    tasks[e].setStatus("Erledigt");
+                    benutzerEingabeFehlerhaft = false;
+                }
+                e++;
+            }
+        } while(benutzerEingabeFehlerhaft);
 
     }
 

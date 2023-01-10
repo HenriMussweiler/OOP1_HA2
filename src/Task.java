@@ -3,7 +3,6 @@ public class Task {
     private String taskName;
     private String description;
     private String status;
-    private Project Project;
 
     public Task(String taskName, String description, String taskNumber) {
         this.taskName = taskName;
@@ -17,14 +16,6 @@ public class Task {
 
     public void setTaskNumber(String taskNumber) {
         this.taskNumber = taskNumber;
-    }
-
-    public Project getProject() {
-        return Project;
-    }
-
-    public void setProject(Project project) {
-        Project = project;
     }
 
     public String getTaskName() {
@@ -53,6 +44,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return taskNumber + ". " + taskName + " [Status: " + status + "]";
+        return taskName + " [Status: " + status + "]";
     }
 }
